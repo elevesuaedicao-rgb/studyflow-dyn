@@ -14,7 +14,247 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      attempts: {
+        Row: {
+          created_at: string
+          exercise_id: string
+          id: string
+          is_correct: boolean
+          submitted_answer: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          exercise_id: string
+          id?: string
+          is_correct: boolean
+          submitted_answer: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          exercise_id?: string
+          id?: string
+          is_correct?: boolean
+          submitted_answer?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attempts_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          created_at: string
+          id: string
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      exercises: {
+        Row: {
+          answer: Json
+          created_at: string
+          id: string
+          lesson_item_id: string
+          options: Json | null
+          question: string
+          tolerance: number | null
+          type: Database["public"]["Enums"]["exercise_type"]
+          updated_at: string
+        }
+        Insert: {
+          answer: Json
+          created_at?: string
+          id?: string
+          lesson_item_id: string
+          options?: Json | null
+          question: string
+          tolerance?: number | null
+          type: Database["public"]["Enums"]["exercise_type"]
+          updated_at?: string
+        }
+        Update: {
+          answer?: Json
+          created_at?: string
+          id?: string
+          lesson_item_id?: string
+          options?: Json | null
+          question?: string
+          tolerance?: number | null
+          type?: Database["public"]["Enums"]["exercise_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercises_lesson_item_id_fkey"
+            columns: ["lesson_item_id"]
+            isOneToOne: false
+            referencedRelation: "lesson_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lesson_items: {
+        Row: {
+          content_markdown: string | null
+          created_at: string
+          id: string
+          lesson_id: string
+          order_index: number
+          title: string
+          type: Database["public"]["Enums"]["lesson_item_type"]
+          updated_at: string
+        }
+        Insert: {
+          content_markdown?: string | null
+          created_at?: string
+          id?: string
+          lesson_id: string
+          order_index?: number
+          title: string
+          type: Database["public"]["Enums"]["lesson_item_type"]
+          updated_at?: string
+        }
+        Update: {
+          content_markdown?: string | null
+          created_at?: string
+          id?: string
+          lesson_id?: string
+          order_index?: number
+          title?: string
+          type?: Database["public"]["Enums"]["lesson_item_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_items_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lessons: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          number: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          number: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          number?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          completed_items: Json
+          course_id: string
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_items?: Json
+          course_id: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_items?: Json
+          course_id?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_progress_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +263,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      exercise_type: "mcq" | "numeric"
+      lesson_item_type: "theory" | "example" | "exercise"
+      user_role: "Professor" | "Student"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +392,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      exercise_type: ["mcq", "numeric"],
+      lesson_item_type: ["theory", "example", "exercise"],
+      user_role: ["Professor", "Student"],
+    },
   },
 } as const
