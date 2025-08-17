@@ -70,11 +70,6 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [dataLoading, setDataLoading] = useState(true);
 
-  // Redirect if not authenticated
-  if (!user && !loading) {
-    return <Navigate to="/auth" replace />;
-  }
-
   useEffect(() => {
     if (user) {
       loadCourseData();
@@ -223,6 +218,23 @@ export default function Dashboard() {
     }
   };
 
+  // Handle loading states first
+  if (loading || dataLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <GraduationCap className="h-12 w-12 animate-pulse mx-auto mb-4 text-primary" />
+          <p>Loading course data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Redirect if not authenticated
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
   const getProgressPercentage = () => {
     if (lessonItems.length === 0) return 0;
     return Math.round((userProgress.completed_items.length / lessonItems.length) * 100);
@@ -290,17 +302,6 @@ export default function Dashboard() {
       </ScrollArea>
     );
   };
-
-  if (loading || dataLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <GraduationCap className="h-12 w-12 animate-pulse mx-auto mb-4 text-primary" />
-          <p>Loading course data...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (!course) {
     return (
